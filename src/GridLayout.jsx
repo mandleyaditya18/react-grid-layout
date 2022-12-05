@@ -13,10 +13,13 @@ const originalItems = [
 
 const GridLayout = () => {
   const [items, setItems] = useState(originalItems);
+
+  //   layouts can be set to empty array as well, items will stack in 1st col in that case
   const [layouts, setLayouts] = useState([
     { i: "1", x: 0, y: 0, w: 1, h: 2 },
     { i: "2", x: 1, y: 0, w: 3, h: 2 },
     { i: "3", x: 4, y: 0, w: 1, h: 2 },
+    { i: "4", x: 5, y: 0, w: 1, h: 2 },
   ]);
 
   const onLayoutChange = (layout) => {
@@ -33,13 +36,16 @@ const GridLayout = () => {
         content: randomNumber,
       },
     ];
-    console.log({ newItems });
     setItems(newItems);
     const newLayouts = [
       ...layouts,
       { i: randomNumber, x: 0, y: 9999999, w: 1, h: 2 },
     ];
     setLayouts(newLayouts);
+  };
+
+  const removeItemHandler = (item) => {
+    setItems(items.filter((i) => i.cardId !== item.cardId));
   };
 
   return (
@@ -59,8 +65,15 @@ const GridLayout = () => {
         onLayoutChange={onLayoutChange}
       >
         {items.map((item) => (
-          <div key={item.cardId} className="border border-black">
+          <div key={item.cardId} className="border border-black flex">
             <Widget id={item.cardId} item={item} />
+            <div
+              className="border border-slate-400 rounded-full w-fit h-fit p-1 relative cursor-pointer"
+              onClick={() => removeItemHandler(item)}
+              aria-hidden
+            >
+              X
+            </div>
           </div>
         ))}
       </ResponsiveGridLayout>
